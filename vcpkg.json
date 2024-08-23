@@ -1,0 +1,11 @@
+{
+  "name": "rtcfg",
+  "version": "0.0.1",
+  "dependencies": [
+    "spdlog",
+    "brpc",
+    "gtest"
+  ],
+  "overrides": [
+  ]
+}
