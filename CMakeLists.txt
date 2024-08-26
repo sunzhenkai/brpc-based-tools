@@ -7,3 +7,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CPP_FLAGS} -O2 -fPIC -std=c++17")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g")
 
 find_package(spdlog CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
+find_package(glog CONFIG REQUIRED)
+
+set(THIRD_PARTIES fmt::fmt spdlog::spdlog glog::glog)
+
+include_directories(src)
+file(GLOB_RECURSE COMMON_SRC src/**.cpp)
+
+file(GLOB_RECURSE PRESS_SRC tools/press/*.cpp)
+add_executable(press ${PRESS_SRC} ${COMMON_SRC})
+target_link_libraries(press ${THIRD_PARTIES})
