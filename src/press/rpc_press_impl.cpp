@@ -47,12 +47,16 @@ int PressClient::init() {
     LOG(ERROR) << "Fail to initialize channel";
     return -1;
   }
-  _method_descriptor = utils::find_method_by_name(_options->service, _options->method, _importer);
-  if (nullptr == _method_descriptor) {
-    LOG(ERROR) << "Fail to find method=" << _options->service << '.' << _options->method;
-    return -1;
+  if (_importer == nullptr) {
+    LOG(WARNING) << "None proto service (Proto importer is nullptr)";
+  } else {
+    _method_descriptor = utils::find_method_by_name(_options->service, _options->method, _importer);
+    if (nullptr == _method_descriptor) {
+      LOG(ERROR) << "Fail to find method=" << _options->service << '.' << _options->method;
+      return -1;
+    }
+    _response_prototype = utils::get_prototype_by_method_descriptor(_method_descriptor, false, _factory);
   }
-  _response_prototype = utils::get_prototype_by_method_descriptor(_method_descriptor, false, _factory);
   return 0;
 }
 

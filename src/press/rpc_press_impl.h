@@ -76,10 +76,10 @@ class PressClient {
   brpc::Channel _rpc_client;
   std::string _attachment;
   const PressOptions *_options;
-  const google::protobuf::MethodDescriptor *_method_descriptor;
-  const google::protobuf::Message *_response_prototype;
-  google::protobuf::compiler::Importer *_importer;
-  google::protobuf::DynamicMessageFactory *_factory;
+  const google::protobuf::MethodDescriptor *_method_descriptor{nullptr};
+  const google::protobuf::Message *_response_prototype{nullptr};
+  google::protobuf::compiler::Importer *_importer{nullptr};
+  google::protobuf::DynamicMessageFactory *_factory{nullptr};
 };
 
 class RpcPress {
@@ -108,7 +108,7 @@ class RpcPress {
   bool _started;
   bool _stop;
   FILE *_output_json;
-  google::protobuf::compiler::Importer *_importer;
+  google::protobuf::compiler::Importer *_importer{nullptr};
   google::protobuf::DynamicMessageFactory _factory;
   std::vector<pthread_t> _ttid;
   utils::InfoThread _info_thr;
