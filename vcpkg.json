@@ -6,7 +6,9 @@
     "fmt",
     "thrift",
     "brpc",
-    "glog"
+    "glog",
+    "protobuf",
+    "gflags"
   ],
   "overrides": [
     {

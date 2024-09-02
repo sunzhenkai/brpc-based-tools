@@ -16,20 +16,20 @@ namespace utils {
 
 const MethodDescriptor *find_method_by_name(const string &service_name, const string &method_name, Importer *importer) {
   const ServiceDescriptor *descriptor = importer->pool()->FindServiceByName(service_name);
-  if (NULL == descriptor) {
+  if (nullptr == descriptor) {
     LOG(FATAL) << "Fail to find service=" << service_name;
-    return NULL;
+    return nullptr;
   }
   return descriptor->FindMethodByName(method_name);
 }
 
 const Message *get_prototype_by_method_descriptor(const MethodDescriptor *descripter, bool is_input,
                                                   DynamicMessageFactory *factory) {
-  if (NULL == descripter) {
-    LOG(FATAL) << "Param[descripter] is NULL";
-    return NULL;
+  if (nullptr == descripter) {
+    LOG(FATAL) << "Param[descripter] is nullptr";
+    return nullptr;
   }
-  const Descriptor *message_descriptor = NULL;
+  const Descriptor *message_descriptor = nullptr;
   if (is_input) {
     message_descriptor = descripter->input_type();
   } else {

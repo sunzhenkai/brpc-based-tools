@@ -1,6 +1,4 @@
-
-#ifndef PBRPCPRESS_PBRPC_PRESS_H
-#define PBRPCPRESS_PBRPC_PRESS_H
+#pragma once
 
 #include <brpc/channel.h>
 #include <bvar/bvar.h>
@@ -10,10 +8,12 @@
 #include <cstdio>
 #include <deque>
 
-#include "utils/info_thread.h"
+// self
+#include "press/info_thread.h"
+#include "press/message_manager.h"
 #include "utils/pb_util.h"
 
-namespace pbrpcframework {
+namespace press {
 struct PressOptions {
   std::string service;   // service name (packet.rpcservice)
   std::string method;    // method name (rpc service method)
@@ -40,6 +40,7 @@ struct PressOptions {
   std::string lb_policy;  // "rr", "Policy of load balance rr ||random"
   std::string proto_file;
   std::string proto_includes;
+  MessageManager message_manager;
 
   PressOptions()
       : server_type(0),
@@ -56,62 +57,60 @@ struct PressOptions {
 
 class PressClient {
  public:
-  PressClient(const PressOptions* options, google::protobuf::compiler::Importer* importer,
-              google::protobuf::DynamicMessageFactory* factory) {
-    _method_descriptor = NULL;
-    _response_prototype = NULL;
+  PressClient(const PressOptions *options, google::protobuf::compiler::Importer *importer,
+              google::protobuf::DynamicMessageFactory *factory) {
+    _method_descriptor = nullptr;
+    _response_prototype = nullptr;
     _options = options;
     _importer = importer;
     _factory = factory;
   }
 
-  google::protobuf::Message* get_output_message() { return _response_prototype->New(); }
+  google::protobuf::Message *get_output_message() { return _response_prototype->New(); }
 
   int init();
-  void call_method(brpc::Controller* cntl, google::protobuf::Message* request, google::protobuf::Message* response,
-                   google::protobuf::Closure* done);
+  void call_method(brpc::Controller *cntl, google::protobuf::Message *request, google::protobuf::Message *response,
+                   google::protobuf::Closure *done);
 
  public:
   brpc::Channel _rpc_client;
   std::string _attachment;
-  const PressOptions* _options;
-  const google::protobuf::MethodDescriptor* _method_descriptor;
-  const google::protobuf::Message* _response_prototype;
-  google::protobuf::compiler::Importer* _importer;
-  google::protobuf::DynamicMessageFactory* _factory;
+  const PressOptions *_options;
+  const google::protobuf::MethodDescriptor *_method_descriptor;
+  const google::protobuf::Message *_response_prototype;
+  google::protobuf::compiler::Importer *_importer;
+  google::protobuf::DynamicMessageFactory *_factory;
 };
 
 class RpcPress {
  public:
   RpcPress();
   ~RpcPress();
-  int init(const PressOptions* options);
+  int init(const PressOptions *options);
   int start();
   int stop();
-  const PressOptions* options() { return &_options; }
+  const PressOptions *options() { return &_options; }
 
  private:
   DISALLOW_COPY_AND_ASSIGN(RpcPress);
 
-  bool new_pbrpc_press_client_by_client_type(int client_type);
   void sync_client();
-  void handle_response(brpc::Controller* cntl, google::protobuf::Message* request, google::protobuf::Message* response,
+  void handle_response(brpc::Controller *cntl, google::protobuf::Message *request, google::protobuf::Message *response,
                        int64_t start_time_ns);
-  static void* sync_call_thread(void* arg);
+  static void *sync_call_thread(void *arg);
 
   bvar::LatencyRecorder _latency_recorder;
   bvar::Adder<int64_t> _error_count;
   bvar::Adder<int64_t> _sent_count;
-  std::deque<google::protobuf::Message*> _msgs;
-  PressClient* _pbrpc_client;
+  //  std::deque<google::protobuf::Message *> _msgs;
+  PressClient *_pbrpc_client;
   PressOptions _options;
   bool _started;
   bool _stop;
-  FILE* _output_json;
-  google::protobuf::compiler::Importer* _importer;
+  FILE *_output_json;
+  google::protobuf::compiler::Importer *_importer;
   google::protobuf::DynamicMessageFactory _factory;
   std::vector<pthread_t> _ttid;
   utils::InfoThread _info_thr;
 };
-}  // namespace pbrpcframework
-#endif  // PBRPCPRESS_PBRPC_PRESS_H
+}  // namespace press
