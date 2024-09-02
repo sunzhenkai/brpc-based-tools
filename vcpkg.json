@@ -1,0 +1,19 @@
+{
+  "name": "rtcfg",
+  "version": "0.0.1",
+  "dependencies": [
+    "spdlog",
+    "fmt",
+    "thrift",
+    "brpc",
+    "glog",
+    "protobuf",
+    "gflags"
+  ],
+  "overrides": [
+    {
+      "name": "thrift",
+      "version": "0.20.0#1"
+    }
+  ]
+}
